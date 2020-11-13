@@ -1,0 +1,17 @@
+{
+  "name": "cache-control",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --no-cache --watchAll"
+  },
+  "keywords": [],
+  "author": "Weslley Fratini",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "jest": "^26.6.3",
+    "ts-jest": "^26.4.4"
+  }
+}
