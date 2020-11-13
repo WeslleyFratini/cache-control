@@ -1,4 +1,3 @@
-
 Feature: Cliente online
 
     Como um cliente online
