@@ -1,5 +1,5 @@
 import { CacheStore } from "@/data/protocols/cache"
-import { SavePurchases } from "@/domain/usecases"
+import { LoadPurchases, SavePurchases } from "@/domain/usecases"
 
 
 export class CacheStoreSpy implements CacheStore {
@@ -8,7 +8,15 @@ export class CacheStoreSpy implements CacheStore {
     insertCallsCount = 0;
     deleteKey: string;
     insertKey: string;
+    fetchKey: string;
     insertValues: Array<SavePurchases.Params> = []
+    fetchResult: any
+
+    fetch(key: string): void {
+        this.actions.push(CacheStoreSpy.Action.fetch)
+        this.fetchKey = key
+        return this.fetchResult
+    }
 
     delete(key: string): void {
         this.actions.push(CacheStoreSpy.Action.delete)
@@ -45,11 +53,19 @@ export class CacheStoreSpy implements CacheStore {
         })
     }
 
+    simulateFetchError(): void {
+        jest.spyOn(CacheStoreSpy.prototype, 'fetch').mockImplementationOnce(() => {
+            this.actions.push(CacheStoreSpy.Action.fetch)
+            throw new Error()
+        })
+    }
+
 }
 
 export namespace CacheStoreSpy {
     export enum Action {
         delete,
-        insert
+        insert,
+        fetch
     }
 }
