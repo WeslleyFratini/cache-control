@@ -1,18 +1,23 @@
-import { CacheStore } from "@/data/protocols/cache"
-import { LoadPurchases, SavePurchases } from "@/domain/usecases"
+import { CacheStore } from '@/data/protocols/cache'
+import { SavePurchases } from '@/domain/usecases'
 
+const maxCacheInDays = 3
+
+export const getCacheExpirationDate = (timestamp: Date): Date => {
+    const maxCacheAge = new Date(timestamp)
+    maxCacheAge.setDate(maxCacheAge.getDate() - maxCacheInDays)
+    return maxCacheAge
+}
 
 export class CacheStoreSpy implements CacheStore {
     actions: Array<CacheStoreSpy.Action> = []
-    deleteCallsCount = 0;
-    insertCallsCount = 0;
-    deleteKey: string;
-    insertKey: string;
-    fetchKey: string;
+    deleteKey: string
+    insertKey: string
+    fetchKey: string
     insertValues: Array<SavePurchases.Params> = []
     fetchResult: any
 
-    fetch(key: string): void {
+    fetch(key: string): any {
         this.actions.push(CacheStoreSpy.Action.fetch)
         this.fetchKey = key
         return this.fetchResult
@@ -20,23 +25,18 @@ export class CacheStoreSpy implements CacheStore {
 
     delete(key: string): void {
         this.actions.push(CacheStoreSpy.Action.delete)
-        this.deleteCallsCount++
         this.deleteKey = key
-
     }
 
     insert(key: string, value: any): void {
         this.actions.push(CacheStoreSpy.Action.insert)
-        this.insertCallsCount++
         this.insertKey = key
         this.insertValues = value
-
     }
 
     replace(key: string, value: any): void {
         this.delete(key)
         this.insert(key, value)
-
     }
 
     simulateDeleteError(): void {
@@ -59,7 +59,6 @@ export class CacheStoreSpy implements CacheStore {
             throw new Error()
         })
     }
-
 }
 
 export namespace CacheStoreSpy {
